@@ -34,9 +34,9 @@ typedef enum STATEenum{
 #define LATx_HIGH 1;
 #define LATx_LOW 0;
 
-#define LED1 LATDbits.LATD0
-#define LED2 LATDbits.LATD1
-#define LED3 LATDbits.LATD2
+#define LED0 c
+#define LED1 LATDbits.LATD1
+#define LED2 LATDbits.LATD2
 
 #define PORTx_HIGH 1
 #define PORTx_LOW 0
@@ -52,44 +52,43 @@ int main(void){
   while(1){
     switch(FSM){
       case state1:
-        LED1 = LATx_HIGH;
-        LED2 = LATx_LOW;
-        LED3 = LATx_LOW;
+        LATDbits.LATD0 = LATx_HIGH;
+        LATDbits.LATD1 = LATx_LOW;
+        LATDbits.LATD2 = LATx_LOW;
         break;
       case state2:
-        LED1 = LATx_LOW;
-        LED2 = LATx_HIGH;
-        LED3 = LATx_LOW;
+        LATDbits.LATD0 = LATx_LOW;
+        LATDbits.LATD1 = LATx_HIGH;
+        LATDbits.LATD2 = LATx_LOW;
         break;
       case state3:
-        LED1 = LATx_LOW;
-        LED2 = LATx_LOW;
-        LED3 = LATx_HIGH;
+        LATDbits.LATD0 = LATx_LOW;
+        LATDbits.LATD1 = LATx_LOW;
+        LATDbits.LATD2 = LATx_HIGH;
         break;
     }
   }
+  return 0;
 }
 
-void __ISR(_CHANGE_NOTICE_VECTOR, IPL1SRS) _CNInterrupt(void){
+void __ISR(_CHANGE_NOTICE_VECTOR, IPL7SRS) _CNInterrupt(void){
+  PORTD;// Needed For Some Reason...
   IFS1bits.CNDIF = 0; // Turn Flag Down
-  int i = PORTD;// Needed For Some Reason...
   if(PORTDbits.RD6 == PORTx_LOW){// Button Pressed
-    //TMR1 = 0; // Reset Timer Register
-    //T1CONbits.ON = 1;// Start Timer
+    TMR1 = 0;
+    T1CONbits.ON = 1;
   }else if(PORTDbits.RD6 == PORTx_HIGH){// Button Released
-    //if(T1CONbits.ON == 1){
-    //  T1CONbits.ON = 0;// Turn Off Timer
-    //  TMR1 = 0;// Reset Timer Register
-      // Advance State Forward
+    if(T1CONbits.ON == 1){
+      T1CONbits.ON = 0;
+      TMR1 = 0;
+      if(FSM == state1)FSM = state2;
+      else if(FSM == state2)FSM = state3;
+      else if(FSM == state3)FSM = state1;
+    }else{
       if(FSM == state1)FSM = state3;
       else if(FSM == state2)FSM = state1;
       else if(FSM == state3)FSM = state2;
-    //}else{
-      // Advance State Backward
-    //  if(FSM == state1){FSM = state2;
-    //  }else if(FSM == state2){FSM = state3;
-    //  }else if(FSM == state3){FSM = state1;};
-    //};
+    }
   };
 }
 

@@ -43,5 +43,5 @@ void initSWs(){
   // Enable Interrupt
   IEC1bits.CNDIE = 1;
   // Set Priority (Default)
-  IPC8bits.CNIP = 1;
+  IPC8bits.CNIP = 7;
 }
