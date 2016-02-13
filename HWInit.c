@@ -32,9 +32,9 @@ void initLEDs(){
 void initSWs(){
   // Set Tristate Registers to Input for Switches
   TRISDbits.TRISD6 = TRISx_INPUT;
-  // Activate Pull-Up Resistor
+  // Enable Pull-Up Resistor
   CNPUDbits.CNPUD6 = CNPUx_ACTIVE;
-  // Active Change Notification on Port
+  // Enable Change Notification on Port
   CNCONDbits.ON = 1;
   // Enable Change Notification on Pin
   CNENDbits.CNIED6 = 1;
