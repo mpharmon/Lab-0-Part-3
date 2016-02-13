@@ -8,11 +8,14 @@
 #include "HWInit.h"
 #endif
 
-#define TRISx_INPUT 1;
-#define TRISx_OUTPUT 0;
+#define TRISx_INPUT 1
+#define TRISx_OUTPUT 0
 
-#define LATx_HIGH 1;
-#define LATx_LOW 0;
+#define LATx_HIGH 1
+#define LATx_LOW 0
+
+#define CNPUx_ACTIVE 1
+#define CNPUx_INACTIVE 0
 
 void initLEDs(){
   // Set tristate registers to output for LED's
@@ -24,4 +27,21 @@ void initLEDs(){
   LATDbits.LATD0 = LATx_LOW;
   LATDbits.LATD1 = LATx_LOW;
   LATDbits.LATD2 = LATx_LOW;
+}
+
+void initSWs(){
+  // Set Tristate Registers to Input for Switches
+  TRISDbits.TRISD6 = TRISx_INPUT;
+  // Activate Pull-Up Resistor
+  CNPUDbits.CNPUD6 = CNPUx_ACTIVE;
+  // Active Change Notification on Port
+  CNCONDbits.ON = 1;
+  // Enable Change Notification on Pin
+  CNENDbits.CNIED6 = 1;
+  // Turn Flag Down
+  IFS1bits.CNDIF = 0;
+  // Enable Interrupt
+  IEC1bits.CNDIE = 1;
+  // Set Priority (Default)
+  IPC8bits.CNIP = 7;
 }
