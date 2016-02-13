@@ -1,2 +1,2 @@
 void initLEDs();
-
+void initSWs();
